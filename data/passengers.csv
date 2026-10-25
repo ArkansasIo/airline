@@ -1,0 +1,9 @@
+name_suffix,name,passenger_id,address,city,gender,data_of_birth,weight
+Mr.,John Smith,P0001,12 Oak Street,Little Rock,M,1990-04-12,78kg
+Ms.,Emma Johnson,P0002,88 Maple Ave,Dallas,F,1985-09-30,62kg
+Dr.,Ravi Patel,P0003,410 Cedar Rd,Denver,M,1978-01-22,80kg
+Mrs.,Liu Chen,P0004,75 Birch Blvd,Chicago,F,1992-07-08,55kg
+Mr.,Carlos Garcia,P0005,9 Elm Court,Seattle,M,1983-11-17,85kg
+Miss.,Ava Thompson,P0006,231 Willow Way,San Francisco,F,1996-03-25,58kg
+Ms.,Grace Okafor,P0007,56 Redwood St,Honolulu,F,1988-12-02,60kg
+Mr.,Ethan Brooks,P0008,301 Aspen Dr,Los Angeles,M,1994-06-14,75kg
