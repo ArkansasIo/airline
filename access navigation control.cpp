@@ -1,11 +1,11 @@
-
+﻿
 /*access navigation control
-  Name: engine reservation  Program
+  Name: airline   Program
   Author: apocalypse coder0
   Date Started: 2018 /5/2
   Date Stop: 2018/5/2
   Version 1.0
-  Description: C++ engine reservation Database System
+  Description: C++ airline  Database System
 */
 //TODO (#0#): Work on passenger_information
 //TODO (#1#): Work on Reservation
@@ -22,21 +22,21 @@ struct flight;  //Forward Declaration of Flight structure
 
 //Airline List Structure And Function Declarations
 
-struct engine reservation    //Structure for Airline node, includes strings for Airline name
+struct airline    //Structure for Airline node, includes strings for Airline name
 {                //pointer locations to the next airline and also to the flight list for that airline
-	char *engine reservation name;
-	struct engine reservation  *next;
+	char *airlinename;
+	struct airline  *next;
 	struct flight *node1;
 } *start1 = NULL;
 
-engine reservation * create_airline_node(engine reservation  *start1);  //Function Declarations
-engine reservation * enter_airline_info(engine reservation  *node);
-engine reservation * delete_airline_node(engine reservation  *start1);
-void print_airline_list(engine reservation  *start1);
-engine reservation * enter_flight_menu(engine reservation  *start1);
-void write_to_file(engine reservation  *start1);
-engine reservation * read_from_file();
-engine reservation * airline_menu(engine reservation  *start1);
+airline * create_airline_node(airline  *start1);  //Function Declarations
+airline * enter_airline_info(airline  *node);
+airline * delete_airline_node(airline  *start1);
+void print_airline_list(airline  *start1);
+airline * enter_flight_menu(airline  *start1);
+void write_to_file(airline  *start1);
+airline * read_from_file();
+airline * airline_menu(airline  *start1);
 
 //Flight List Structure And Function Declarations
 
@@ -55,6 +55,8 @@ struct flight   //Structure for flight node, includes strings for flightname, fr
 	struct passenger *node2;
 	struct reservation *node3;
 } *start2 = NULL;
+
+struct reservation;  //forward declaration used by struct flight above
 
 flight* create_flight_node(flight *start2);  //Function Declarations
 flight* enter_flight_info(flight *node);
@@ -101,17 +103,18 @@ reservation* reservation_menu(reservation *start4);
 void print_reservation_list(reservation *node);
  
 
- struct seat_assignment  //Reservation Structure includes name of the reservation and the ponter to the next
-{                          //Reservation node, structure declaration also declares start as the first node
-   char pass_name[80];
+ struct seat_assignment  //Seat Assignment Structure
+{
+   char seat_assignment[80];   //seat name/id
+   char cost[80];
    int Available;
 
-      struct seat_assignment  *next;  //and declares it NULL
+      struct seat_assignment  *next;
 } *start5 = NULL;
 
-seat_assignment* create_seat_assignment_node(seat_assignment *start5)
+seat_assignment* create_seat_assignment_node(seat_assignment *start5);
 seat_assignment* enter_seat_assignment_info(seat_assignment *node);
-seat_assignment* cancelled_seat_assignment_node(seat_assignment *start5
+seat_assignment* cancelled_seat_assignment_node(seat_assignment *start5);
 seat_assignment* seat_assignment_menu(seat_assignment *start5);
 void print_seat_assignment_list(seat_assignment *node);
 
@@ -120,19 +123,19 @@ void print_seat_assignment_list(seat_assignment *node);
 
 //Member Functions To Manipulate The Airline Linked List
 
-engine reservation * create_airline_node(engine reservation  *start1)  //Creates a sorted list of airlines (default entry sort condition by airline name)
+airline  * create_airline_node(airline   *start1)  //Creates a sorted list of airlines (default entry sort condition by airline name)
 {                                             //by entering the airline name in a node at the sorted position,
                                              //it calls the function "enter_airline_info() to ask the
 	if (start1 == NULL)                     //user for its information
 {
-		start1 = (engine reservation  *) malloc(sizeof(engine reservation ));
+		start1 = (airline   *) malloc(sizeof(airline  ));
 		start1 = enter_airline_info(start1);
 		start1->next = NULL;
 }
 	else
 {
-		engine reservation  *count_node1, *count_node2, *node;
-		node = (engine reservation  *) malloc(sizeof(engine reservation ));
+		airline   *count_node1, *count_node2, *node;
+		node = (airline   *) malloc(sizeof(airline  ));
 		node = enter_airline_info(node);
 		for (count_node1 = start1;
         (count_node1 != NULL) && (strcmp(count_node1->airlinename, node->airlinename) <= 0);
@@ -157,7 +160,7 @@ engine reservation * create_airline_node(engine reservation  *start1)  //Creates
 }
 
 
-engine reservation * enter_airline_info(engine reservation  *node)  //Function to enter the information about the airline, this function is
+airline  * enter_airline_info(airline   *node)  //Function to enter the information about the airline, this function is
 {                                           //called from the function create_airline_node(airline *start1)by itself.
 	printf("\n");
 	printf(" Welcome To  Name Airport\n");
@@ -165,12 +168,13 @@ engine reservation * enter_airline_info(engine reservation  *node)  //Function t
 	printf("\n");
 	fflush(stdin);
 	node->airlinename = new char [80];
-	gets(node->airlinename);
+	fgets(node->airlinename,80,stdin);
+	node->airlinename[strcspn(node->airlinename,"\n")] = 0;
 	node->node1 = NULL;
 	return node;
 }
 
-engine reservation * delete_airline_node(engine reservation  *start)  //Function to delete the name of a airline, function
+airline  * delete_airline_node(airline   *start)  //Function to delete the name of a airline, function
 {                                             //searches for the name and deletes if it is found.
 	if(start1 == NULL)
 	{
@@ -183,9 +187,10 @@ engine reservation * delete_airline_node(engine reservation  *start)  //Function
 		printf("\n");
 		printf("Please enter the  name of the Airline you want to delete\n");
 		fflush(stdin);
-		gets(airlinename);
-		engine reservation  *count_node1, *count_node2;
-		engine reservation  *temp;
+		fgets(airlinename,80,stdin);
+	airlinename[strcspn(airlinename,"\n")] = 0;
+		airline   *count_node1, *count_node2;
+		airline   *temp;
 	for(count_node1 = start1;
     (count_node1 != NULL) && (strcmp(count_node1->airlinename, airlinename) != 0);
      count_node2 = count_node1, count_node1 = count_node1->next);
@@ -220,7 +225,7 @@ engine reservation * delete_airline_node(engine reservation  *start)  //Function
 }
 
 
-void print_airline_list(engine reservation  *start) /*Function to print all the airlines operating on the airport*/
+void print_airline_list(airline   *start) /*Function to print all the airlines operating on the airport*/
 {
 	if (start1 == NULL)
  {
@@ -230,13 +235,13 @@ void print_airline_list(engine reservation  *start) /*Function to print all the 
 	else
 {
 		printf("\n");
-		engine reservation  *count;
+		airline   *count;
 		for (count = start1; count != NULL; count = count->next)
 		printf("%s\n", count->airlinename);
 	}
 }
 
-engine reservation * enter_flight_menu(engine reservation  *start1)  /*Function to search for the airline
+airline  * enter_flight_menu(airline   *start1)  /*Function to search for the airline
                                              entered and enter its flight list menu*/
 {
 	char airlinename[80];
@@ -244,8 +249,9 @@ engine reservation * enter_flight_menu(engine reservation  *start1)  /*Function 
 	printf("Welcome to the Flight List Menu\n");
 	printf("Enter the Airline name you wish to check\n");
 	fflush(stdin);
-	gets(airlinename);
-	engine reservation  *count;
+	fgets(airlinename,80,stdin);
+	airlinename[strcspn(airlinename,"\n")] = 0;
+	airline   *count;
 	for(count = start1;
      (count != NULL) && (strcmp(count->airlinename, airlinename) != 0);
       count = count->next);
@@ -263,10 +269,10 @@ engine reservation * enter_flight_menu(engine reservation  *start1)  /*Function 
 	}
 }
 
-void write_to_file(engine reservation  *start1)  //Write to file airline.txt
+void write_to_file(airline   *start1)  //Write to file airline.txt
 {
 	FILE *fp;
-	engine reservation  *count1;
+	airline   *count1;
 	flight *count2;
 	passenger *count3;
 	reservation *count4;
@@ -440,363 +446,222 @@ void write_to_file(engine reservation  *start1)  //Write to file airline.txt
                length = strlen(count4->cost);
    	           fwrite(&length,sizeof(int),1,fp);
 
-   	           //Write passenger cost to file
-   	           fwrite(count4->cost,length,1,fp);*/
-//------------------------------------------------------------------------------
+               //Write passenger cost to file
+               fwrite(count4->cost,length,1,fp);
+
             //Write seat assignment to file
-              fwrite(count5->seat_assignment,length,1,fp);
-
-              //Determine length of seat assignment and write to file
-              length = strlen(count5->cost);
-   	          fwrite(&length,sizeof(int),1,fp);
-
-              //Write seat_assignment to file
-   	          fwrite(count5->seat_assignment,length,1,fp);
 
 }
  }
   }
+ }
 	fclose(fp);
 }
 
-engine reservation * read_from_file()  //read from file airline.txt
+airline  * read_from_file()  //read from file airline.txt
 {
 	FILE *fp;
-	engine reservation  *start, *curr, *temp;
+	airline   *start, *curr;
 	int length = 0;
 	int airline_count= 0;
 	int flight_count = 0;
 	int passenger_count = 0;
-    int reservation_count = 0;
-    int seat_assignment_count = 0;
+	int reservation_count = 0;
+	int seat_assignment_count = 0;
 
 	//Initialize pointers
 	start = curr = NULL;
 
 	//Open file for reading
 	fp = fopen("airline.txt","rb");
+	if(fp == NULL)
+		return NULL;
 
-	while(!feof(fp))
-{
-		//Read in number of airlines stored in file
-		if( fp == NULL)
-			airline_count = 0;
-		else
-			fread(&airline_count,sizeof(int),1,fp);
-
+	while(fread(&airline_count,sizeof(int),1,fp) == 1)
+	{
 		//Loop through "airline_count" airlines
 		for( ; airline_count > 0; --airline_count )
-{
-			//allocate room for a single airline structure and flight link to NULL
-			temp = (engine reservation  *)malloc(sizeof(engine reservation ));
-			temp->next = NULL;
-			temp->node1 = NULL;
+		{
+			//allocate room for a single airline structure
+			airline *a = (airline *)malloc(sizeof(airline));
+			a->next = NULL;
+			a->node1 = NULL;
 
-			//read airline name length
+			//read airline name length, then the name itself
 			fread(&length,sizeof(int),1,fp);
+			a->airlinename = (char *)malloc(length+1);
+			fread(a->airlinename,length,1,fp);
+			a->airlinename[length] = 0;
 
-			//allocate sufficent memory for the airline name
-			temp->airlinename = (char *)malloc(length+1);
+			//append airline to the end of the airline list
+			if(start == NULL)
+				start = curr = a;
+			else
+			{
+				curr->next = a;
+				curr = curr->next;
+			}
 
-			//read in airline's name and NULL terminate
-			fread(temp->airlinename,length,1,fp);
-			temp->airlinename[length] = 0;
-
-			//Add current airline to end of growing list of airlines
-	if( start == NULL )
-{
-			start = curr = temp;
-}
-	else
-{
-			curr->next = temp;
-			curr = curr->next;
-}
-//------------------------------------------------------------------------------
-			//Read in number of flights stored for the airline in file
+			//Read in number of flights stored for the airline
 			fread(&flight_count,sizeof(int),1,fp);
 
-			//Loop through "flight_count" flight
-	for( ; flight_count > 0; --flight_count )
-	{
-			//allocate room for a single flight structure and set passenger link to NULL
-			curr->node1 = (flight *)malloc(sizeof(flight));
-			curr->node1->next = NULL;
-			curr->node1->node2 = NULL;
-
-            //read flight number length
-            fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for the flight number
-			curr->node1->flightnumber = (char *)malloc(length+1);
-
-			//read in flight number and NULL terminate
-			fread(curr->node1->flightnumber,length,1,fp);
-			curr->node1->flightnumber[length] = 0;
-
-            //read date of flight length
-			fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for the flight name
-			curr->node1->date_of_flight = (char *)malloc(length+1);
-
-			//read in date_of_flight and NULL terminate
-            fread(curr->node1->date_of_flight,length,1,fp);
-			curr->node1->date_of_flight[length] = 0;
-
-			//read date_of_flight length
-			fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for the departure location
-			curr->node1->departure_location = (char *)malloc(length+1);
-
-			//read in departure location and NULL terminate
-			fread(curr->node1->departure_location,length,1,fp);
-			curr->node1->departure_location[length] = 0;
-
-			//read arrival location length
-			fread(&length,sizeof(int),1,fp);
-
-            //allocate sufficent memory for the arrival location
-			curr->node1->arrival_location = (char *)malloc(length+1);
-
-            //read in arrival location and NULL terminate
-			fread(curr->node1->arrival_location,length,1,fp);
-			curr->node1->arrival_location[length] = 0;
-
-			//read take off time length
-			fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for the take off time
-			curr->node1->take_off_time = (char *)malloc(length+1);
-
-			//read in take off time and NULL terminate
-			fread(curr->node1->take_off_time,length,1,fp);
-			curr->node1->take_off_time[length] = 0;
-
-            //read in arrival time length
-            fread(&length,sizeof(int),1,fp);
-
-            //allocate sufficent memory for the arrival time
-			curr->node1->arrival_time = (char *)malloc(length+1);
-
-			//read in arrival time and NULL terminate
-			fread(curr->node1->arrival_time,length,1,fp);
-			curr->node1->arrival_time[length] = 0;
-
-			//Add current flight to end of growing list of flights
-		if( start->node1 == NULL )
-{
-			start->node1 = curr->node1 = temp->node1;
-}
-	else
-{
-			curr->node1->next = temp->node1;
-			curr->node1 = curr->node1->next;
-}
-//------------------------------------------------------------------------------
-         //Read in number of passengers stored for that file
-         fread(&passenger_count,sizeof(int),1,fp);
-
-        //Loop through "passenger_count" passengers for this flight
-        for( ; passenger_count > 0; --passenger_count )
-{
-			//allocate room for a single passenger structure
-			curr->node1->node2 = (passenger *)malloc(sizeof(passenger));
-			curr->node1->node2->next = NULL;
-
-            //read passenger name suffix length
-			fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for passenger name suffix
-            curr->node1->node2->name_suffix = (char *)malloc(length+1);
-
-            //read in passenger name suffix and NULL terminate
-            fread(curr->node1->node2->name_suffix ,length,1,fp);
-			curr->node1->node2->name_suffix [length] = 0;
-
-			//read passenger name length
-            fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for the passenger name
-			curr->node1->node2->name = (char *)malloc(length+1);
-
-            //read in passenger name and NULL terminate
-			fread(curr->node1->node2->name,length,1,fp);
-			curr->node1->node2->name[length] = 0;
-
-             //read passenger id length
-            fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for the passenger id
-			curr->node1->node2->passenger_id = (char *)malloc(length+1);
-
-            //read in passenger id and NULL terminate
-			fread(curr->node1->node2->passenger_id,length,1,fp);
-			curr->node1->node2->passenger_id[length] = 0;
-
-            //read passenger address length
-            fread(&length,sizeof(int),1,fp);
-
-            //allocate sufficent memory for passenger address
-            curr->node1->node2->address = (char *)malloc(length+1);
-
-            //read in passenger address and NULL terminate
-            fread(curr->node1->node2->address,length,1,fp);
-			curr->node1->node2->address[length] = 0;
-
-            //read passenger city length
-            fread(&length,sizeof(int),1,fp);
-
-            //allocate sufficent memory for passenger city
-            curr->node1->node2->city = (char *)malloc(length+1);
-
-            //read in passenger city and NULL terminate
-            fread(curr->node1->node2->city ,length,1,fp);
-			curr->node1->node2->city [length] = 0;
-
-			//read passenger gender length
-			fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for passenger gender
-            curr->node1->node2->gender = (char *)malloc(length+1);
-
-            //read in passenger gender and NULL terminate
-            fread(curr->node1->node2->gender ,length,1,fp);
-			curr->node1->node2->gender [length] = 0;
-
-            //read passenger data of birth length
-			fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for passenger gender
-            curr->node1->node2->data_of_birth = (char *)malloc(length+1);
-
-            //read in passenger data of birth and NULL terminate
-            fread(curr->node1->node2->data_of_birth ,length,1,fp);
-			curr->node1->node2->data_of_birth [length] = 0;
-
-			//read passenger weight length
-			fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for passenger weight
-            curr->node1->node2->weight = (char *)malloc(length+1);
-
-            //read in passenger weight and NULL terminate
-            fread(curr->node1->node2->weight ,length,1,fp);
-			curr->node1->node2->weight [length] = 0;
-
-//Add current passenger to end of growing list of passengers for this flight
-			if( start->node1->node2 == NULL )
-{
-			start->node1->node2 = curr->node1->node2 = temp->node1->node2;
-}
-			else
-{
-			curr->node1->node2->next = temp->node1->node2;
-			curr->node1->node2 = curr->node1->node2->next;
-}
-//------------------------------------------------------------------------------
-       //Read in number of reservation stored for that file
-		fread(&reservation_count,sizeof(int),1,fp);
-
-        //Loop through "reservation_count" reservation for this flight
-        for( ; reservation_count > 0; --reservation_count )
-{
-			//allocate room for a single reservation structure
-			curr->node1->node2 = (passenger *)malloc(sizeof(reservation));
-			curr->node1->node2->next = NULL;
-
-			//read reservation id length
-            fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for the reservation id
-			curr->node1->node3->reservation_id = (char *)malloc(length+1);
-
-            //read in reservation id and NULL terminate
-			fread(curr->node1->node3->reservation_id,length,1,fp);
-			curr->node1->node3->reservation_id[length] = 0;
-
-            //read passenger id lenght
-            fread(&length,sizeof(int),1,fp);
-
-            //allocate sufficent memory for the passenger id
-            curr->node1->node3->passenger_id = (char *)malloc(length+1);
-
-            //read in passenger_id and NULL terminghte
-            fread(curr->node1->node3->passenger_id,length,1,fp);
-            curr->node1->node3->passenger_id[length] = 0;
-
-            //read flight number lenght
-            fread(&length,sizeof(int),1,fp);
-
-            //allocate sufficent memory for the flight number
-            curr->node1->node3->flight_number = (char *)malloc(length+1);
-
-            //read in flight number and NULL termighte
-            fread(curr->node1->node3->flight_number,length,1,fp);
-            curr->node1->node3->flight_number[length] = 0;
-
-            //read cost lenght
-            fread(&length,sizeof(int),1,fp);
-
-            //allocate sufficent memory for the cost
-            curr->node1->node3->cost = (char *)malloc(length+1);
-
-            //read in cost and NULL termighte
-            fread(curr->node1->node3->cost,length,1,fp);
-            curr->node1->node3->cost[length] = 0;
-
-//Add current reservation to end of growing list of reservation for this flight
-			if( start->node1->node2 == NULL )
-{
-			start->node1->node2 = curr->node1->node2 = temp->node1->node2;
-}
-			else
-{
-			curr->node1->node2->next = temp->node1->node2;
-			curr->node1->node2 = curr->node1->node2->next;
-}
-//------------------------------------------------------------------------------
-//Read in number of seat assignment stored for that file
-		fread(&seat_assignment_count,sizeof(int),1,fp);
-
-        //Loop through "seatassignment_count" seat assignment for this flight
-        for( ; seat_assignment_count > 0; --seat_assignment_count )
-{
-			//allocate room for a single seat assignment structure
-			curr->node1->node2 = (seat_assignment *)malloc(sizeof(seat_assignment));
-			curr->node1->node2->next = NULL;
-
-			//read seat assignment length
-            fread(&length,sizeof(int),1,fp);
-
-			//allocate sufficent memory for the seat assignment
-			curr->node1->node3->reservation_id = (char *)malloc(length+1);
-
-            //read in seat_assignment and NULL terminate
-			fread(curr->node1->node3->seat_assignment,length,1,fp);
-			curr->node1->node3->seat_assignment[length] = 0;
-
-//Add current seat_assignment to end of growing list of seat assignment for this flight
-			if( start->node1->node2 == NULL )
-{
-			start->node1->node2 = curr->node1->node2 = temp->node1->node2;
-}
-			else
-{
-			curr->node1->node2->next = temp->node1->node2;
-			curr->node1->node2 = curr->node1->node2->next;
-
+			//Loop through "flight_count" flights
+			flight *lastflight = NULL;
+			for( ; flight_count > 0; --flight_count )
+			{
+				//allocate room for a single flight structure
+				flight *f = (flight *)malloc(sizeof(flight));
+				f->next = NULL;
+				f->node2 = NULL;
+				f->node3 = NULL;
+
+				//read each string field of the flight, length-prefixed
+				fread(&length,sizeof(int),1,fp);
+				f->flightnumber = (char *)malloc(length+1);
+				fread(f->flightnumber,length,1,fp);
+				f->flightnumber[length] = 0;
+
+				fread(&length,sizeof(int),1,fp);
+				f->date_of_flight = (char *)malloc(length+1);
+				fread(f->date_of_flight,length,1,fp);
+				f->date_of_flight[length] = 0;
+
+				fread(&length,sizeof(int),1,fp);
+				f->departure_location = (char *)malloc(length+1);
+				fread(f->departure_location,length,1,fp);
+				f->departure_location[length] = 0;
+
+				fread(&length,sizeof(int),1,fp);
+				f->arrival_location = (char *)malloc(length+1);
+				fread(f->arrival_location,length,1,fp);
+				f->arrival_location[length] = 0;
+
+				fread(&length,sizeof(int),1,fp);
+				f->take_off_time = (char *)malloc(length+1);
+				fread(f->take_off_time,length,1,fp);
+				f->take_off_time[length] = 0;
+
+				fread(&length,sizeof(int),1,fp);
+				f->arrival_time = (char *)malloc(length+1);
+				fread(f->arrival_time,length,1,fp);
+				f->arrival_time[length] = 0;
+
+				//append flight to the end of this airline's flight list
+				if(a->node1 == NULL)
+					a->node1 = f;
+				else
+					lastflight->next = f;
+				lastflight = f;
+
+				//Read in number of passengers stored for that flight
+				fread(&passenger_count,sizeof(int),1,fp);
+
+				//Loop through "passenger_count" passengers for this flight
+				passenger *lastpass = NULL;
+				for( ; passenger_count > 0; --passenger_count )
+				{
+					//allocate room for a single passenger structure
+					passenger *p = (passenger *)malloc(sizeof(passenger));
+					p->next = NULL;
+
+					//read each string field of the passenger, length-prefixed
+					fread(&length,sizeof(int),1,fp);
+					p->name_suffix = (char *)malloc(length+1);
+					fread(p->name_suffix,length,1,fp);
+					p->name_suffix[length] = 0;
+
+					fread(&length,sizeof(int),1,fp);
+					p->name = (char *)malloc(length+1);
+					fread(p->name,length,1,fp);
+					p->name[length] = 0;
+
+					fread(&length,sizeof(int),1,fp);
+					p->passenger_id = (char *)malloc(length+1);
+					fread(p->passenger_id,length,1,fp);
+					p->passenger_id[length] = 0;
+
+					fread(&length,sizeof(int),1,fp);
+					p->address = (char *)malloc(length+1);
+					fread(p->address,length,1,fp);
+					p->address[length] = 0;
+
+					fread(&length,sizeof(int),1,fp);
+					p->city = (char *)malloc(length+1);
+					fread(p->city,length,1,fp);
+					p->city[length] = 0;
+
+					fread(&length,sizeof(int),1,fp);
+					p->gender = (char *)malloc(length+1);
+					fread(p->gender,length,1,fp);
+					p->gender[length] = 0;
+
+					fread(&length,sizeof(int),1,fp);
+					p->data_of_birth = (char *)malloc(length+1);
+					fread(p->data_of_birth,length,1,fp);
+					p->data_of_birth[length] = 0;
+
+					fread(&length,sizeof(int),1,fp);
+					p->weight = (char *)malloc(length+1);
+					fread(p->weight,length,1,fp);
+					p->weight[length] = 0;
+
+					//append passenger to the end of this flight's passenger list
+					if(f->node2 == NULL)
+						f->node2 = p;
+					else
+						lastpass->next = p;
+					lastpass = p;
+				}
+
+				//Read in number of reservations stored for that flight
+				fread(&reservation_count,sizeof(int),1,fp);
+
+				//Loop through "reservation_count" reservations for this flight
+				reservation *lastres = NULL;
+				for( ; reservation_count > 0; --reservation_count )
+				{
+					//allocate room for a single reservation structure
+					reservation *r = (reservation *)malloc(sizeof(reservation));
+					r->next = NULL;
+
+					//read each string field of the reservation, length-prefixed
+					fread(&length,sizeof(int),1,fp);
+					r->reservation_id = (char *)malloc(length+1);
+					fread(r->reservation_id,length,1,fp);
+					r->reservation_id[length] = 0;
+
+					fread(&length,sizeof(int),1,fp);
+					r->passenger_id = (char *)malloc(length+1);
+					fread(r->passenger_id,length,1,fp);
+					r->passenger_id[length] = 0;
+
+					fread(&length,sizeof(int),1,fp);
+					r->flight_number = (char *)malloc(length+1);
+					fread(r->flight_number,length,1,fp);
+					r->flight_number[length] = 0;
+
+					fread(&length,sizeof(int),1,fp);
+					r->cost = (char *)malloc(length+1);
+					fread(r->cost,length,1,fp);
+					r->cost[length] = 0;
+
+					//append reservation to the end of this flight's reservation list
+					if(f->node3 == NULL)
+						f->node3 = r;
+					else
+						lastres->next = r;
+					lastres = r;
+				}
+
+				//Read in number of seat assignments stored for that flight
+				fread(&seat_assignment_count,sizeof(int),1,fp);
+			}
+		}
 	}
-
-	}
- }
-}
 	fclose(fp);
 	return start;
 }
-
-engine reservation * airline_menu(engine reservation  *start)  //Menu Function which is handles the airlinelist
+airline  * airline_menu(airline   *start)  //Menu Function which is handles the airlinelist
 {
 	int choice;
 	printf("Welcome to the Unknow Name Airline System Main Menu\n");
@@ -885,27 +750,33 @@ flight* enter_flight_info(flight *node)  // Function to enter the information ab
 	printf("Please enter the Flight number\n"); //Flight Number (unique key)
 	       fflush(stdin);
 	       node->flightnumber = new char [80];
-	       gets(node->flightnumber);
+fgets(node->flightnumber,80,stdin);
+	       node->flightnumber[strcspn(node->flightnumber,"\n")] = 0;
 	printf("Please enter the Date of Flight\n");  //Date of Flight
            fflush(stdin);
 	       node->date_of_flight = new char [80];
-	       gets(node->date_of_flight);
+fgets(node->date_of_flight,80,stdin);
+	       node->date_of_flight[strcspn(node->date_of_flight,"\n")] = 0;
 	printf("Please enter the Departure Location\n");  //Departure From City
 	       fflush(stdin);
 	       node->departure_location = new char [80];
-	       gets(node->departure_location);
+fgets(node->departure_location,80,stdin);
+	       node->departure_location[strcspn(node->departure_location,"\n")] = 0;
 	printf("Please enter the Arrival Location\n");  //Arrival At City
 	       fflush(stdin);
 	       node->arrival_location = new char [80];
-	       gets(node->arrival_location);
+fgets(node->arrival_location,80,stdin);
+	       node->arrival_location[strcspn(node->arrival_location,"\n")] = 0;
 	printf("Please enter the Take off time\n");  //Departuare time
 	       fflush(stdin);
            node->take_off_time = new char [80];
-	       gets(node->take_off_time);
+fgets(node->take_off_time,80,stdin);
+	       node->take_off_time[strcspn(node->take_off_time,"\n")] = 0;
     printf("Please enter the Arrival time\n");  //Arrival time
            fflush(stdin);
            node->arrival_time = new char [80];
-	       gets(node->arrival_time);
+fgets(node->arrival_time,80,stdin);
+	       node->arrival_time[strcspn(node->arrival_time,"\n")] = 0;
 	       node->node2 = NULL;
 
 	return node;
@@ -924,7 +795,8 @@ flight* delete_flight_node(flight *start2)  // Function to delete the name of a 
 		char flightnumber[80];
 	printf("Please enter the flight number you want to delete\n");
 		fflush(stdin);
-		gets(flightnumber);
+		fgets(flightnumber,80,stdin);
+	flightnumber[strcspn(flightnumber,"\n")] = 0;
 		flight *count_node1, *count_node2;
 		flight *temp;
 		for(count_node1 = start2;
@@ -990,7 +862,8 @@ flight* enter_passenger_menu(flight *start2)  // Function to search for the flig
 	printf("Welcome to the passenger list Menu\n");
 	printf("Enter the Flight Number you wish to check\n");
 	fflush(stdin);
-	gets(flightnumber);
+	fgets(flightnumber,80,stdin);
+	flightnumber[strcspn(flightnumber,"\n")] = 0;
 	flight *count;
 	for(count = start2; (count != NULL) && (strcmp(count->flightnumber, flightnumber) != 0);
      count = count->next);
@@ -1103,35 +976,43 @@ passenger* enter_passenger_info(passenger *node)  // Function to enter the name 
 	printf("Please enter Passenger Name Suffix\n");
 	fflush(stdin);
 	node->name_suffix = new char [6];
-	gets(node->name_suffix);
+	fgets(node->name_suffix,6,stdin);
+	node->name_suffix[strcspn(node->name_suffix,"\n")] = 0;
     printf("Please enter Passenger Full Name\n");
 	fflush(stdin);
 	node->name = new char [80];
-	gets(node->name);
+	fgets(node->name,80,stdin);
+	node->name[strcspn(node->name,"\n")] = 0;
 	printf("please enter Passenger ID\n");
 	fflush(stdin);
 	node->passenger_id = new char [10];
-	gets(node->passenger_id);
+	fgets(node->passenger_id,10,stdin);
+	node->passenger_id[strcspn(node->passenger_id,"\n")] = 0;
     printf("Please enter Passenger Address;\n");
     fflush(stdin);
     node->address = new char [80];
-	gets(node->address);
+	fgets(node->address,80,stdin);
+	node->address[strcspn(node->address,"\n")] = 0;
     printf("Please enter Passenger City\n");
     fflush(stdin);
     node->city = new char [30];
-	gets(node->city);
+	fgets(node->city,30,stdin);
+	node->city[strcspn(node->city,"\n")] = 0;
     printf("Please enter Gender\n");
     fflush(stdin);
     node->gender = new char [10];
-    gets(node->gender);
+    fgets(node->gender,10,stdin);
+	node->gender[strcspn(node->gender,"\n")] = 0;
     printf("Please enter Data Of Birth\n");
     fflush(stdin);
     node->data_of_birth = new char [10];
-    gets(node->data_of_birth);
+    fgets(node->data_of_birth,10,stdin);
+	node->data_of_birth[strcspn(node->data_of_birth,"\n")] = 0;
     printf("Please enter Weight\n");
     fflush(stdin);
     node->weight = new char [10];
-    gets(node->weight);
+    fgets(node->weight,10,stdin);
+	node->weight[strcspn(node->weight,"\n")] = 0;
 	return node;
 }
 
@@ -1148,7 +1029,8 @@ passenger* delete_passenger_node(passenger *start3)  // Function to delete the n
 		char name[80];
 		printf("Please enter the name of the passenger you want to delete\n");
 		fflush(stdin);
-		gets(name);
+		fgets(name,80,stdin);
+	name[strcspn(name,"\n")] = 0;
 		passenger *count_node1, *count_node2;
 		passenger *temp;
 	for(count_node1 = start3; (count_node1 != NULL) && (strcmp(count_node1->name, name) != 0);
@@ -1288,19 +1170,23 @@ reservation* enter_reservation_info(reservation *node)  //Function to enter the 
 	printf("Please enter your Reservation ID\n");
 	fflush(stdin);
 	node->reservation_id = new char [80];
-	gets(node->reservation_id);
+	fgets(node->reservation_id,80,stdin);
+	node->reservation_id[strcspn(node->reservation_id,"\n")] = 0;
 	printf("please enter your Passenger ID\n");
 	fflush(stdin);
 	node->passenger_id = new char [10];
-	gets(node->passenger_id);
+	fgets(node->passenger_id,10,stdin);
+	node->passenger_id[strcspn(node->passenger_id,"\n")] = 0;
     printf("Please enter your Flight Number;\n");
     fflush(stdin);
     node->flight_number = new char [80];
-	gets(node->flight_number);
+	fgets(node->flight_number,80,stdin);
+	node->flight_number[strcspn(node->flight_number,"\n")] = 0;
     printf("Please enter your Cost\n");
     fflush(stdin);
     node->cost = new char [30];
-	gets(node->cost);
+	fgets(node->cost,30,stdin);
+	node->cost[strcspn(node->cost,"\n")] = 0;
 	return node;
 }
 
@@ -1317,7 +1203,8 @@ reservation* delete_reservation_node(reservation *start4)  //Function to delete 
 		char reservation_id[80];
 		printf("Please enter the reservation id you want to delete\n");
 		fflush(stdin);
-		gets(reservation_id);
+		fgets(reservation_id,80,stdin);
+	reservation_id[strcspn(reservation_id,"\n")] = 0;
 		reservation *count_node1, *count_node2;
 		reservation *temp;
 	for(count_node1 = start4;
@@ -1409,7 +1296,7 @@ void print_reservation_list(reservation *start4)
 	}
 }
 //------------------------------------------------------------------------------
- Number Of Seats and Number Of Seats Booked
+// Number Of Seats and Number Of Seats Booked
 seat_assignment* create_seat_assignment_node(seat_assignment *start5)  //Creates a sorted list of reservation by entering the reservation node at the
 {                                                    // sorted position, it calls the function "enter_reservation_info() to
     printf("\n");                                    // ask the user for its information
@@ -1449,12 +1336,12 @@ seat_assignment* enter_seat_assignment_info(seat_assignment *node)  // Function 
 	printf(" Welcome to the Seat Assignment List\n");
 	printf("Please enter your \n");
 	fflush(stdin);
-	node->seat_assignment = new char [80];
-	gets(node->seat_assignment);
+	fgets(node->seat_assignment,80,stdin);
+	node->seat_assignment[strcspn(node->seat_assignment,"\n")] = 0;
 	return node;
 }
 
-seat_assignment* delete_seat_assignment_node(seat_assignment *start5)
+seat_assignment* cancelled_seat_assignment_node(seat_assignment *start5)
 {                       // Function to delete the name of a seat_assignment in the flight, function
                        // searches for the name and deletes if it is found.
 	printf("\n");
@@ -1465,14 +1352,15 @@ seat_assignment* delete_seat_assignment_node(seat_assignment *start5)
 	}
 	else
 	{
-		char seat_assignment[80];
+		char seat_name[80];
 		printf("Please enter the seat_assignment you want to delete\n");
 		fflush(stdin);
-		gets(seat_assignment);
+		fgets(seat_name,80,stdin);
+		seat_name[strcspn(seat_name,"\n")] = 0;
 		seat_assignment *count_node1, *count_node2;
 		seat_assignment *temp;
 	for(count_node1 = start5;
-     (count_node1 != NULL) && (strcmp(count_node1->seat_assignment, seat_assignment) != 0);
+     (count_node1 != NULL) && (strcmp(count_node1->seat_assignment, seat_name) != 0);
       count_node2 = count_node1, count_node1 = count_node1->next);
 		if(count_node1!= NULL)
 	{
@@ -1528,11 +1416,11 @@ seat_assignment* seat_assignment_menu(seat_assignment *start5)  // Menu Function
 		} break;
 	case 3:
 		{
-			print_passenger_seat_list(start5);
+			print_seat_assignment_list(start5);
 		} break;
 	case 4:
 		{
-			return start;
+			return start5;
 		} break;
 	default:
 		{
@@ -1563,12 +1451,13 @@ int main()
 {
 	start1 = read_from_file();
 	start1 = airline_menu(start1);
-	start1 = open from database();
+	return 0;
 }
 
 //------------------------------------------------------------------------------
 
 
+/*
 The Unknow Name airline system has hired you to develop a database system
 to keep track of airline reservations and flights.
 
@@ -1599,6 +1488,7 @@ Some other notes:
 - Passengers and flights must already be in the system in order
 to be added to a reservation.
 
-	- Use the unique ID's so you do not repeat data in the files.*/
+	- Use the unique ID's so you do not repeat data in the files.
+*/
 
 

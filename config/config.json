@@ -1,0 +1,47 @@
+{
+  "app": {
+    "name": "Airport Control - Airline Reservation System",
+    "version": "1.0.0",
+    "author": "apocalypse coder0"
+  },
+  "database": {
+    "driver": "mysql",
+    "host": "localhost",
+    "port": 3306,
+    "name": "airport_control",
+    "user": "root",
+    "password": "",
+    "charset": "utf8mb4",
+    "pool": {
+      "min": 2,
+      "max": 10,
+      "idle_timeout_ms": 30000
+    }
+  },
+  "api": {
+    "base_url": "http://localhost:8080/api/v1",
+    "host": "0.0.0.0",
+    "port": 8080,
+    "max_retries": 3,
+    "timeout_ms": 5000,
+    "cors": {
+      "enabled": true,
+      "allowed_origins": [
+        "*"
+      ]
+    }
+  },
+  "seats": {
+    "default_total": 150,
+    "max_per_passenger": 4
+  },
+  "dataset": {
+    "path": "database/dataset.sql",
+    "airline_file": "airline.txt",
+    "save_on_exit": true
+  },
+  "logging": {
+    "level": "info",
+    "file": "logs/airport.log"
+  }
+}
